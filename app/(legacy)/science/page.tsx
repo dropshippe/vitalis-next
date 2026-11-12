@@ -96,7 +96,7 @@ export default function SciencePage() {
         <div style={{ textAlign: 'center' as const }}>
           <div style={{ ...D, fontSize: isMobile ? 32 : 48, fontWeight: 300, marginBottom: 12 }}>Convinced by the science?</div>
           <div style={{ ...D, fontSize: isMobile ? 20 : 28, fontStyle: 'italic', color: '#5cbf94', marginBottom: 32 }}>Try Oxyra risk-free for 90 days.</div>
-          <Link href="/product" style={{ background: 'white', color: '#08080a', fontSize: 12, fontWeight: 600, letterSpacing: 2, textTransform: 'uppercase' as const, padding: '16px 36px', textDecoration: 'none', display: 'inline-block' }}>Shop Now — from $59.99</Link>
+          <Link href="/#buy" style={{ background: 'white', color: '#08080a', fontSize: 12, fontWeight: 600, letterSpacing: 2, textTransform: 'uppercase' as const, padding: '16px 36px', textDecoration: 'none', display: 'inline-block' }}>Shop Now — from $59.99</Link>
         </div>
       </div>
     </div>

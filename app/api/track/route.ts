@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server'
 // We use Vercel KV (Redis) for storage - it's built into Vercel
 // Events are stored as JSON in simple key-value pairs
 
-const ADMIN_SECRET = process.env.ADMIN_SECRET || 'oxyra-admin-2026'
+const ADMIN_SECRET = process.env.ADMIN_SECRET
 
 function getKV() {
   // Use fetch to call Vercel KV REST API
@@ -124,6 +124,9 @@ export async function POST(req: NextRequest) {
 
 export async function GET(req: NextRequest) {
   // Protect with secret
+  if (!ADMIN_SECRET) {
+    return NextResponse.json({ error: 'ADMIN_SECRET is not set' }, { status: 503 })
+  }
   const auth = req.headers.get('x-admin-secret')
   if (auth !== ADMIN_SECRET) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })

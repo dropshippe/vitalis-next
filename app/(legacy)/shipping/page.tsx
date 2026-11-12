@@ -22,7 +22,7 @@ export default function ShippingPage() {
           </div>
         ))}
         <div style={{ marginTop: 48, display: 'flex', gap: 16 }}>
-          <Link href="/#shop" style={{ background: '#08080a', color: 'white', fontFamily: "'DM Sans',sans-serif", fontSize: 12, fontWeight: 600, letterSpacing: 2, textTransform: 'uppercase', padding: '14px 28px', textDecoration: 'none' }}>Shop Now</Link>
+          <Link href="/#buy" style={{ background: '#08080a', color: 'white', fontFamily: "'DM Sans',sans-serif", fontSize: 12, fontWeight: 600, letterSpacing: 2, textTransform: 'uppercase', padding: '14px 28px', textDecoration: 'none' }}>Shop Now</Link>
           <Link href="/returns" style={{ background: 'transparent', color: '#08080a', fontFamily: "'DM Sans',sans-serif", fontSize: 12, fontWeight: 600, letterSpacing: 2, textTransform: 'uppercase', padding: '13px 28px', textDecoration: 'none', border: '1.5px solid #08080a' }}>Returns Policy</Link>
         </div>
       </div>

@@ -100,7 +100,7 @@ export default function ReviewsPage() {
             </div>
           ))}
         </div>
-        <Link href="/product" style={{ background: 'white', color: '#08080a', fontSize: 11, fontWeight: 600, letterSpacing: 2, textTransform: 'uppercase' as const, padding: '14px 28px', textDecoration: 'none', whiteSpace: 'nowrap' as const, flexShrink: 0, display: isMobile ? 'block' : 'inline-block', textAlign: isMobile ? 'center' as const : 'left' as const }}>
+        <Link href="/#buy" style={{ background: 'white', color: '#08080a', fontSize: 11, fontWeight: 600, letterSpacing: 2, textTransform: 'uppercase' as const, padding: '14px 28px', textDecoration: 'none', whiteSpace: 'nowrap' as const, flexShrink: 0, display: isMobile ? 'block' : 'inline-block', textAlign: isMobile ? 'center' as const : 'left' as const }}>
           Shop Now — from $59.99
         </Link>
       </div>

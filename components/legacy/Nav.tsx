@@ -14,8 +14,8 @@ export default function Nav() {
   }, [])
 
   const links = [
-    ['/product', 'The Bottle'],
-    ['/why', 'Why Oxyra'],
+    
+    
     ['/science', 'Science'],
     ['/reviews', 'Reviews'],
     ['/faqs', 'FAQs'],
@@ -65,7 +65,7 @@ export default function Nav() {
             <span style={{ display: 'block', width: 24, height: 2, background: '#08080a', transition: 'all 0.2s', transform: menuOpen ? 'rotate(-45deg) translate(5px, -5px)' : 'none', marginTop: menuOpen ? -7 : 0 }} />
           </button>
         ) : (
-          <Link href="/product" style={{
+          <Link href="/#buy" style={{
             background: '#08080a', color: 'white', fontSize: 11, fontWeight: 600,
             letterSpacing: 2, textTransform: 'uppercase', padding: '12px 26px',
             textDecoration: 'none', whiteSpace: 'nowrap'
@@ -91,7 +91,7 @@ export default function Nav() {
               borderBottom: '1px solid #f0f0ec'
             }}>{label}</Link>
           ))}
-          <Link href="/product" onClick={() => setMenuOpen(false)} style={{
+          <Link href="/#buy" onClick={() => setMenuOpen(false)} style={{
             display: 'block', marginTop: 20,
             background: '#08080a', color: 'white', textAlign: 'center',
             fontSize: 12, fontWeight: 600, letterSpacing: 2,

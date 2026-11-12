@@ -1,7 +1,7 @@
 'use client'
 import Link from 'next/link'
-import { useEffect, useSearchParams } from 'next/navigation'
-import { Suspense } from 'react'
+import { useSearchParams } from 'next/navigation'
+import { Suspense, useEffect } from 'react'
 
 function SuccessContent() {
   const searchParams = useSearchParams()

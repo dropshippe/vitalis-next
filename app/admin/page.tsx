@@ -1,7 +1,6 @@
 'use client'
 import { useState, useEffect, useCallback } from 'react'
 
-const ADMIN_SECRET = 'oxyra-admin-2026'
 
 const D = { fontFamily: "'Cormorant Garamond', serif" } as React.CSSProperties
 const B = { fontFamily: "'DM Sans', sans-serif" } as React.CSSProperties
@@ -58,7 +57,7 @@ export default function AdminDashboard() {
     setLoading(true)
     try {
       const res = await fetch('/api/track', {
-        headers: { 'x-admin-secret': ADMIN_SECRET }
+        headers: { 'x-admin-secret': password }
       })
       if (res.ok) {
         const json = await res.json()
@@ -67,7 +66,7 @@ export default function AdminDashboard() {
       }
     } catch {}
     setLoading(false)
-  }, [])
+  }, [password])
 
   useEffect(() => {
     if (authed) {
@@ -77,13 +76,15 @@ export default function AdminDashboard() {
     }
   }, [authed, fetchData])
 
-  function handleLogin(e: React.FormEvent) {
+  // The password is checked on the server; it is never shipped in the page code.
+  async function handleLogin(e: React.FormEvent) {
     e.preventDefault()
-    if (password === ADMIN_SECRET) {
+    const res = await fetch('/api/track', { headers: { 'x-admin-secret': password } }).catch(() => null)
+    if (res?.ok) {
       setAuthed(true)
       setError('')
     } else {
-      setError('Incorrect password')
+      setError(res?.status === 503 ? 'Admin password is not set up yet (ADMIN_SECRET)' : 'Incorrect password')
     }
   }
 
