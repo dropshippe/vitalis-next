@@ -82,7 +82,7 @@ export function startHeroBubbles(canvas: HTMLCanvasElement, reducedMotion: boole
     // Surge for the first two seconds, then taper to a quiet drift.
     const surge = elapsed < 0.15 ? 0 : Math.max(0, 1 - (elapsed - 0.15) / 2.1)
     const density = Math.min(1.6, w / 900)
-    debt += dt * (surge * surge * 260 * density + 5 * density)
+    debt += dt * (surge * surge * 260 * density + 3 * density)
     while (debt >= 1) {
       debt -= 1
       spawn(surge > 0.12 && Math.random() < 0.9)

@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next'
-import '@fontsource-variable/bodoni-moda/opsz.css'
+import '@fontsource-variable/jost'
 import '@fontsource-variable/instrument-sans'
 import './globals.css'
 import Tracker from '@/components/Tracker'
