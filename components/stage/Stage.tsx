@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from 'react'
 import { startHeroBubbles } from './heroBubbles'
+import { startBottleFizz } from './bottleFizz'
 
 const HEADLINE = ['Water,', 'elevated.']
 
@@ -86,7 +87,8 @@ function samplePose(keys: Pose[], p: number): Pose {
 export default function Stage() {
   const sectionRef = useRef<HTMLElement>(null)
   const pinRef = useRef<HTMLDivElement>(null)
-  const bottleRef = useRef<HTMLImageElement>(null)
+  const bottleRef = useRef<HTMLDivElement>(null)
+  const fizzRef = useRef<HTMLCanvasElement>(null)
   const bubblesRef = useRef<HTMLCanvasElement>(null)
   const heroRef = useRef<HTMLDivElement>(null)
   const cueRef = useRef<HTMLDivElement>(null)
@@ -163,11 +165,23 @@ export default function Stage() {
 
     const stopBubbles = startHeroBubbles(bubbles, reducedMotion)
 
+    // The water inside the bottle works hardest while the page is describing a cycle.
+    const fizz = fizzRef.current
+      ? startBottleFizz(fizzRef.current, {
+          getEnergy: () => 0.45 + 0.55 * smooth(0.14, 0.3, p) * (1 - smooth(0.66, 0.78, p)),
+          reducedMotion,
+        })
+      : null
+    const io = new IntersectionObserver(([entry]) => fizz?.setActive(entry.isIntersecting))
+    io.observe(section)
+
     return () => {
       cancelAnimationFrame(raf)
       window.removeEventListener('scroll', wake)
       window.removeEventListener('resize', wake)
       stopBubbles()
+      io.disconnect()
+      fizz?.stop()
     }
   }, [])
 
@@ -177,15 +191,32 @@ export default function Stage() {
     <section ref={sectionRef} className="stage" aria-label="Oxyra hydrogen water bottle">
       <div ref={pinRef} className="stage-pin">
         <canvas ref={bubblesRef} className="stage-layer" aria-hidden="true" />
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          ref={bottleRef}
-          className="stage-bottle"
-          src="/images/bottle-hero.jpg"
-          width={728}
-          height={1024}
-          alt="The Oxyra bottle: a glass body lit blue, full of rising bubbles, between a brushed steel cap and base"
-        />
+        {/* Turbulence that makes the water in the photo shimmer. */}
+        <svg className="sr-only" aria-hidden="true" focusable="false">
+          <filter id="water-shimmer" x="0" y="0" width="100%" height="100%">
+            <feTurbulence type="fractalNoise" baseFrequency="0.011 0.02" numOctaves="2" seed="4" result="noise">
+              <animate
+                attributeName="baseFrequency"
+                dur="13s"
+                values="0.011 0.02; 0.016 0.03; 0.011 0.02"
+                repeatCount="indefinite"
+              />
+            </feTurbulence>
+            <feDisplacementMap in="SourceGraphic" in2="noise" scale="9" xChannelSelector="R" yChannelSelector="G" />
+          </filter>
+        </svg>
+
+        <div ref={bottleRef} className="stage-bottle">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/images/bottle-hero.jpg"
+            width={728}
+            height={1024}
+            alt="The Oxyra bottle: a glass body lit blue, full of rising bubbles, between a brushed steel cap and base"
+          />
+          <div className="bottle-water" aria-hidden="true" />
+          <canvas ref={fizzRef} className="bottle-fizz" aria-hidden="true" />
+        </div>
 
         <div ref={heroRef} className="hero-copy">
           <h1 className="hero-title" aria-label="Water, elevated.">
