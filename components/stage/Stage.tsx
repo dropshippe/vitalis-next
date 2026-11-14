@@ -125,7 +125,7 @@ export default function Stage() {
   let letter = 0
 
   return (
-    <section ref={sectionRef} className="stage" aria-label="Oxyra hydrogen water bottle">
+    <section ref={sectionRef} className="stage" data-dark data-dark-extend="0.2" aria-label="Oxyra hydrogen water bottle">
       <div className="stage-pin">
         <canvas ref={bubblesRef} className="stage-layer" aria-hidden="true" />
         {noWebgl ? (

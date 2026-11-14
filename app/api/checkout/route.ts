@@ -36,7 +36,7 @@ export async function POST(req: NextRequest) {
         },
       ],
       metadata: { bundle: bundle.id, bottles: String(bundle.bottles) },
-      success_url: `${baseUrl}/success?session_id={CHECKOUT_SESSION_ID}`,
+      success_url: `${baseUrl}/success?bundle=${bundle.id}&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${baseUrl}/#buy`,
       shipping_address_collection: { allowed_countries: [...SHIP_TO] },
       shipping_options: [

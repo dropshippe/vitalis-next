@@ -15,7 +15,7 @@ export default function Buy() {
   async function buy() {
     setBusy(true)
     setError('')
-    track('checkout_start', { qty: choice })
+    track('checkout_start', { bundle: choice })
     try {
       const res = await fetch('/api/checkout', {
         method: 'POST',

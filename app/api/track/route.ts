@@ -100,7 +100,7 @@ export async function POST(req: NextRequest) {
       case 'checkout_complete':
         await kvIncr(`stats:conversions:total`)
         await kvIncr(`stats:conversions:${dateKey}`)
-        const amount = bundle === '1' ? 5999 : bundle === '2' ? 9999 : 13499
+        const amount = bundle === '1' ? 5999 : 9999
         // Store revenue
         const currentRevRaw = await kvGet(`stats:revenue:total`)
         const currentRev = parseInt(currentRevRaw || '0')
