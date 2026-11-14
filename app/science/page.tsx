@@ -1,4 +1,5 @@
 import PageShell, { BuyBand } from '@/components/PageShell'
+import { Cutaway, HydrogenScale } from '@/components/Illustrations'
 
 export const metadata = {
   title: 'The science — Oxyra',
@@ -26,7 +27,10 @@ export default function SciencePage() {
       </section>
 
       <section className="split">
-        <h2 className="display-3">How the bottle makes it</h2>
+        <div>
+          <h2 className="display-3">How the bottle makes it</h2>
+          <Cutaway />
+        </div>
         <div className="prose">
           <ol className="steps">
             <li>
@@ -59,6 +63,7 @@ export default function SciencePage() {
             The manufacturer rates this bottle at up to 3,000 ppb from a sealed cycle. Your result depends on water
             temperature, how full the bottle is and how soon you drink.
           </p>
+          <HydrogenScale />
           <p>
             <strong>Drink it soon.</strong> Hydrogen starts leaving the water as soon as you open the lid. Colder
             water holds it longer, and shaking or pouring loses it faster.

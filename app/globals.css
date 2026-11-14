@@ -905,6 +905,187 @@ body {
   letter-spacing: -0.02em;
 }
 
+/* ---------- illustrations ---------- */
+
+.ill {
+  display: block;
+  width: 10.5rem;
+  height: auto;
+  color: var(--color-ink);
+}
+
+.ill-rise circle {
+  animation: ill-rise 2.4s linear infinite;
+}
+
+.ill-rise-short circle {
+  animation-duration: 1.8s;
+}
+
+@keyframes ill-rise {
+  0% {
+    transform: translateY(10px);
+    opacity: 0;
+  }
+  25% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-22px);
+    opacity: 0;
+  }
+}
+
+.ill-pour {
+  animation: ill-pour 0.9s linear infinite;
+}
+
+@keyframes ill-pour {
+  to {
+    stroke-dashoffset: -18;
+  }
+}
+
+.ill-ring {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: ill-ring 2.4s ease-out infinite;
+}
+
+.ill-ring-2 {
+  animation-delay: 0.5s;
+}
+
+@keyframes ill-ring {
+  0% {
+    transform: scale(0.5);
+    opacity: 0.9;
+  }
+  100% {
+    transform: scale(1.25);
+    opacity: 0;
+  }
+}
+
+.ritual {
+  padding: 0 var(--gutter) clamp(4rem, 9vw, 8rem);
+}
+
+.ritual-inner {
+  max-width: 82rem;
+  margin: 0 auto;
+  padding-top: clamp(3rem, 7vw, 6rem);
+  border-top: 1px solid rgba(11, 29, 42, 0.85);
+}
+
+.ritual-steps {
+  display: grid;
+  gap: 2.5rem;
+  margin: clamp(2rem, 5vw, 4rem) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 760px) {
+  .ritual-steps {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 3rem;
+  }
+}
+
+.ritual-steps h3 {
+  margin: 1.25rem 0 0.35rem;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 1.6rem;
+}
+
+.ritual-steps p {
+  max-width: 18rem;
+  margin: 0;
+  color: #3a4c58;
+}
+
+.cutaway {
+  margin: clamp(1.5rem, 4vw, 3rem) 0 0;
+  max-width: 19rem;
+  color: var(--color-ink);
+}
+
+.cutaway svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  font-family: var(--font-sans);
+}
+
+.cutaway figcaption {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1.25rem;
+  margin-top: 0.75rem;
+  font-size: 0.9rem;
+  color: #51616b;
+}
+
+.h2-scale {
+  margin: 2rem 0 2.25rem;
+}
+
+.h2-bar {
+  position: relative;
+  height: 0.6rem;
+  border-radius: 999px;
+  background: rgba(11, 29, 42, 0.12);
+  overflow: hidden;
+}
+
+.h2-fill {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, #9fd4f2 0%, #2f7fc4 53.3%, #0a2a43 100%);
+}
+
+.h2-tick {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: #fff;
+}
+
+.h2-scale dl {
+  position: relative;
+  height: 3.6rem;
+  margin: 0.6rem 0 0;
+  font-size: 0.9rem;
+  line-height: 1.35;
+}
+
+.h2-scale dl div {
+  position: absolute;
+  top: 0;
+  max-width: 9.5rem;
+  transform: translateX(-50%);
+  text-align: center;
+}
+
+.h2-scale dl .h2-end {
+  right: 0;
+  transform: none;
+  text-align: right;
+}
+
+.h2-scale dt {
+  font-weight: 600;
+  color: var(--color-ink);
+}
+
+.h2-scale dd {
+  margin: 0;
+  color: #51616b;
+}
+
 /* ---------- footer ---------- */
 
 .site-footer {
@@ -984,5 +1165,10 @@ body {
   }
   .stage-gl {
     transition: none;
+  }
+  .ill-rise circle,
+  .ill-pour,
+  .ill-ring {
+    animation: none;
   }
 }
