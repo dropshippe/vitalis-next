@@ -16,8 +16,9 @@ const ROWS: [string, React.ReactNode][] = [
   [
     'Lost or damaged',
     <>
-      If your order hasn’t arrived 14 days after the expected date, or arrives damaged, email{' '}
-      <a href={`mailto:${BUSINESS.email}`}>{BUSINESS.email}</a>. We’ll replace it or refund you.
+      If your order hasn’t arrived 14 days after the expected date, email{' '}
+      <a href={`mailto:${BUSINESS.email}`}>{BUSINESS.email}</a> and we’ll replace it or refund you. If it arrives
+      damaged, email us a photo and we’ll send a replacement. There’s no need to send the damaged one back.
     </>,
   ],
 ]

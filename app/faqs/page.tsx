@@ -90,8 +90,9 @@ const GROUPS: { heading: string; items: [string, React.ReactNode][] }[] = [
       [
         'Is there a warranty?',
         <>
-          Yes. A lifetime warranty on the steel and glass, and two years on the battery and electronics. Accidental
-          damage such as drops isn’t covered. See <a href="/returns">returns and warranty</a>.
+          Yes. A lifetime warranty on the steel and glass, and two years on the battery and electronics. If yours is
+          faulty, email us a photo or video of the fault and we’ll send a replacement. You don’t need to post the old
+          one back. Accidental damage such as drops isn’t covered. See <a href="/returns">returns and warranty</a>.
         </>,
       ],
       ['How do I pay?', 'By card through Stripe’s secure checkout. Prices are in US dollars.'],

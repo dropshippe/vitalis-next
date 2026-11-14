@@ -23,15 +23,22 @@ export default function ReturnsPage() {
           <li>
             Email <a href={`mailto:${BUSINESS.email}`}>{BUSINESS.email}</a> with your order number.
           </li>
-          <li>We reply within two business days with a prepaid return label. Return shipping is on us.</li>
           <li>
-            Once the bottle is back with us, we refund your original payment method within 5 to 7 business days. Your
-            bank may take a few more days to show it.
+            We reply within two business days with the return address. Return postage is yours to pay, and we
+            recommend a tracked service.
+          </li>
+          <li>
+            Once the bottle is back with us, we refund the full price to your original payment method within 5 to 7
+            business days. Your bank may take a few more days to show it.
           </li>
         </ol>
         <p>
-          Bottles that have been dropped, modified or damaged through misuse aren’t covered by the change-of-mind
-          guarantee. Write to us anyway and we’ll look at it.
+          The bottle needs to come back in good condition with everything that was in the box. Bottles that have been
+          dropped, modified or damaged through misuse aren’t covered by the change-of-mind guarantee.
+        </p>
+        <p>
+          <strong>Faulty or damaged?</strong> You don’t need to send anything back. Follow the warranty steps below
+          and we’ll send a replacement.
         </p>
 
         <h2>Our warranty</h2>
@@ -65,10 +72,13 @@ export default function ReturnsPage() {
         <ol>
           <li>
             Email <a href={`mailto:${BUSINESS.email}`}>{BUSINESS.email}</a> with your order number, a short
-            description of the problem and a photo or video.
+            description of the problem, and a photo or video that shows the fault.
           </li>
           <li>We reply within two business days. We may ask you to try a fix from the care guide first.</li>
-          <li>If it’s covered, we send a replacement at no cost to you. We may ask you to return the faulty bottle.</li>
+          <li>
+            If the fault is covered, we ship a replacement at no cost to you. You don’t need to send the faulty bottle
+            back.
+          </li>
         </ol>
         <p>
           This warranty is given by {trader}
