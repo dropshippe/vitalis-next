@@ -827,62 +827,6 @@ body {
   line-height: 1.6;
 }
 
-/* Reviews */
-.reviews {
-  display: grid;
-  gap: 0 4rem;
-  margin: 0 0 clamp(2rem, 5vw, 4rem);
-  padding: 0;
-  list-style: none;
-}
-
-@media (min-width: 900px) {
-  .reviews {
-    grid-template-columns: 1fr 1fr;
-  }
-}
-
-.review {
-  padding: 2rem 0;
-  border-top: 1px solid rgba(11, 29, 42, 0.16);
-}
-
-.review-stars {
-  margin: 0 0 0.75rem;
-  letter-spacing: 0.15em;
-  color: var(--color-ink);
-}
-
-.review-stars span {
-  opacity: 0.2;
-}
-
-.review blockquote {
-  margin: 0;
-  font-family: var(--font-display);
-  font-weight: 300;
-  font-size: 1.45rem;
-  line-height: 1.35;
-}
-
-.review-by {
-  margin: 1rem 0 0;
-  font-size: 0.95rem;
-  color: #51616b;
-}
-
-.empty {
-  max-width: 44rem;
-  padding-bottom: clamp(2.5rem, 6vw, 5rem);
-}
-
-.empty p {
-  margin: 1.25rem 0 0;
-  font-size: 1.1rem;
-  line-height: 1.65;
-  color: #2c3e4a;
-}
-
 /* Closing invitation to buy */
 .buy-band {
   display: flex;
@@ -974,8 +918,7 @@ body {
 .ritual-inner {
   max-width: 82rem;
   margin: 0 auto;
-  padding-top: clamp(3rem, 7vw, 6rem);
-  border-top: 1px solid rgba(11, 29, 42, 0.85);
+  padding-top: clamp(4rem, 9vw, 8rem);
 }
 
 .ritual-steps {
@@ -1084,6 +1027,176 @@ body {
 .h2-scale dd {
   margin: 0;
   color: #51616b;
+}
+
+/* ---------- anatomy: the bottle, part by part ---------- */
+
+.anatomy {
+  padding: clamp(4rem, 9vw, 8rem) var(--gutter);
+  background:
+    radial-gradient(60% 70% at 28% 55%, rgba(18, 80, 124, 0.75) 0%, rgba(4, 18, 31, 0) 70%),
+    var(--color-abyss);
+  color: #fff;
+}
+
+.anatomy-inner {
+  max-width: 82rem;
+  margin: 0 auto;
+}
+
+.anatomy-grid {
+  display: grid;
+  gap: 2.5rem;
+  align-items: center;
+  margin-top: clamp(2rem, 5vw, 4rem);
+}
+
+@media (min-width: 860px) {
+  .anatomy-grid {
+    grid-template-columns: 5fr 6fr;
+    gap: 4rem;
+  }
+}
+
+.anatomy-art {
+  display: block;
+  width: clamp(11rem, 46vw, 22rem);
+  height: auto;
+  margin: 0 auto;
+}
+
+.anatomy-art .part {
+  color: rgba(226, 240, 250, 0.42);
+  transition: color 0.3s, filter 0.3s;
+}
+
+.anatomy-art .part.on {
+  color: var(--color-glow);
+  filter: drop-shadow(0 0 7px rgba(108, 196, 255, 0.75));
+}
+
+.anatomy-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+.anatomy-list li {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+.anatomy-list button {
+  display: block;
+  width: 100%;
+  padding: 0.85rem 0;
+  border: 0;
+  background: none;
+  color: rgba(226, 240, 250, 0.6);
+  font-family: var(--font-display);
+  font-weight: 300;
+  font-size: clamp(1.35rem, 2.4vw, 1.9rem);
+  line-height: 1.2;
+  text-align: left;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.anatomy-list li[data-on="true"] button {
+  color: #fff;
+}
+
+.anatomy-list p {
+  max-width: 30rem;
+  margin: -0.25rem 0 1.1rem;
+  color: rgba(226, 240, 250, 0.82);
+}
+
+/* ---------- compare ---------- */
+
+.compare {
+  padding: clamp(4rem, 9vw, 8rem) var(--gutter) 0;
+  background: #fff;
+}
+
+.compare-inner {
+  max-width: 82rem;
+  margin: 0 auto;
+}
+
+.compare-scroll {
+  margin-top: clamp(2rem, 4vw, 3.5rem);
+  overflow-x: auto;
+}
+
+.compare table {
+  width: 100%;
+  min-width: 46rem;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.compare th,
+.compare td {
+  padding: 1.1rem 1.25rem 1.1rem 0;
+  vertical-align: top;
+  border-bottom: 1px solid rgba(11, 29, 42, 0.16);
+}
+
+.compare thead th:not(.compare-us),
+.compare tbody td:not(.compare-us) {
+  padding-left: 1.25rem;
+}
+
+.compare thead th {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 1.3rem;
+  border-bottom-color: rgba(11, 29, 42, 0.85);
+}
+
+.compare tbody th {
+  width: 11rem;
+  font-weight: 400;
+  color: var(--color-steel);
+}
+
+.compare td {
+  color: #3a4c58;
+}
+
+.compare .compare-us {
+  padding-left: 1.25rem;
+  background: var(--color-glacier);
+  color: var(--color-ink);
+}
+
+.compare tbody .compare-us {
+  font-weight: 500;
+}
+
+/* ---------- glossary ---------- */
+
+.glossary {
+  margin: 0;
+}
+
+.glossary div {
+  padding: 1rem 0;
+  border-bottom: 1px solid rgba(11, 29, 42, 0.16);
+}
+
+.glossary div:first-child {
+  padding-top: 0;
+}
+
+.glossary dt {
+  font-weight: 600;
+  color: var(--color-ink);
+}
+
+.glossary dd {
+  margin: 0.2rem 0 0;
 }
 
 /* ---------- footer ---------- */

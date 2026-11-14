@@ -6,7 +6,7 @@ import Logo from './Logo'
 const LINKS = [
   ['/science', 'Science'],
   ['/story', 'Our story'],
-  ['/reviews', 'Reviews'],
+  ['/care', 'Care'],
   ['/faqs', 'Questions'],
 ] as const
 

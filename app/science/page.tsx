@@ -113,6 +113,56 @@ export default function SciencePage() {
         </div>
       </section>
 
+      <section className="split">
+        <h2 className="display-3">Hydrogen at a glance</h2>
+        <div className="prose">
+          <ul className="plain-list">
+            <li>
+              <strong>The lightest element there is.</strong> A hydrogen molecule is two of the smallest atoms joined
+              together.
+            </li>
+            <li>
+              <strong>No taste, colour or smell.</strong> Hydrogen water looks and tastes like the water you started
+              with.
+            </li>
+            <li>
+              <strong>Neutral.</strong> Dissolved hydrogen doesn’t make water acidic or alkaline.
+            </li>
+            <li>
+              <strong>Restless.</strong> It’s a gas, so it leaves open water steadily. That’s why the bottle makes it
+              on the spot.
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <section className="split">
+        <h2 className="display-3">Words you’ll see</h2>
+        <div className="prose">
+          <dl className="glossary">
+            <div>
+              <dt>ppb</dt>
+              <dd>Parts per billion. The usual measure of how much hydrogen is dissolved. 1,000 ppb is the same as 1 ppm, or 1 milligram per litre.</dd>
+            </div>
+            <div>
+              <dt>Electrolysis</dt>
+              <dd>Using electricity to split water into hydrogen and oxygen.</dd>
+            </div>
+            <div>
+              <dt>SPE/PEM</dt>
+              <dd>
+                Solid polymer electrolyte and proton exchange membrane. A thin membrane that lets the bottle split
+                water while keeping the hydrogen and oxygen sides apart.
+              </dd>
+            </div>
+            <div>
+              <dt>Saturation</dt>
+              <dd>The most hydrogen water can hold at a given pressure and temperature. About 1,600 ppb at normal air pressure.</dd>
+            </div>
+          </dl>
+        </div>
+      </section>
+
       <BuyBand line="See it work for yourself. Ninety days to decide." />
     </PageShell>
   )

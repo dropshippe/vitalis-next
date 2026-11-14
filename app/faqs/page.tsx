@@ -37,7 +37,10 @@ const GROUPS: { heading: string; items: [string, React.ReactNode][] }[] = [
       ],
       [
         'How do I clean it?',
-        'Rinse it with clean water after use. For a deeper clean, add a little lemon juice or food-grade citric acid to water, run a cycle, then rinse well.',
+        <>
+          Rinse it with clean water after use. For a deeper clean, add a little lemon juice or food-grade citric acid
+          to water, run a cycle, then rinse well. The <a href="/care">care guide</a> has the full steps.
+        </>,
       ],
       [
         'Can it go in the dishwasher?',

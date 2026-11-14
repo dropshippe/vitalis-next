@@ -53,38 +53,32 @@ export default function TermsPage() {
           own health.
         </p>
 
-        <h2>7. Reviews</h2>
-        <p>
-          If you send us a review, you allow us to publish it on this site and in our marketing, with your first name
-          and initial. We publish reviews from real buyers and don’t change their meaning.
-        </p>
-
-        <h2>8. This site and its content</h2>
+        <h2>7. This site and its content</h2>
         <p>
           The Oxyra name, logo, text, images and design belong to us or our licensors. You may view the site for
           personal use. Please don’t copy or reuse the content without asking.
         </p>
 
-        <h2>9. Our liability</h2>
+        <h2>8. Our liability</h2>
         <p>
           Our goods come with guarantees that cannot be excluded under the Australian Consumer Law. Subject to those
           guarantees and any other rights that can’t legally be excluded, we aren’t liable for indirect or
           consequential loss, and our total liability for any order is limited to the amount you paid for it.
         </p>
 
-        <h2>10. Governing law</h2>
+        <h2>9. Governing law</h2>
         <p>
           These terms are governed by the laws of {BUSINESS.jurisdiction}. If you’re a consumer elsewhere, you keep
           the protection of the mandatory laws of the country you live in.
         </p>
 
-        <h2>11. Changes</h2>
+        <h2>10. Changes</h2>
         <p>
           We may update these terms. The version on this page when you place an order is the one that applies to that
           order.
         </p>
 
-        <h2>12. Contact</h2>
+        <h2>11. Contact</h2>
         <p>
           {trader}
           {BUSINESS.abn ? `, ABN ${BUSINESS.abn}` : ''}

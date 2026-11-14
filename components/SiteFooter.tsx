@@ -14,11 +14,11 @@ export default function SiteFooter() {
             <a href="/#buy">Buy the bottle</a>
             <a href="/science">Science</a>
             <a href="/story">Our story</a>
-            <a href="/reviews">Reviews</a>
           </nav>
           <nav aria-label="Help">
             <h2>Help</h2>
             <a href="/faqs">Questions</a>
+            <a href="/care">Care guide</a>
             <a href="/shipping">Shipping</a>
             <a href="/returns">Returns and warranty</a>
             <a href={`mailto:${BUSINESS.email}`}>{BUSINESS.email}</a>
