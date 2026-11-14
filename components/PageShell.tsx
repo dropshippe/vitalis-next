@@ -1,5 +1,6 @@
 import SiteNav from './SiteNav'
 import SiteFooter from './SiteFooter'
+import { FROM_PRICE } from '@/lib/catalog'
 
 // Shared frame for every inner page: dark title band, light body, footer.
 export default function PageShell({
@@ -30,12 +31,12 @@ export default function PageShell({
   )
 }
 
-export function BuyBand({ line = 'Ninety days to decide. Free shipping.' }: { line?: string }) {
+export function BuyBand({ line = 'Ninety days to decide. Free shipping worldwide.' }: { line?: string }) {
   return (
     <aside className="buy-band">
       <p>{line}</p>
       <a className="btn btn-dark" href="/#buy">
-        Buy from $59.99
+        Buy from {FROM_PRICE}
       </a>
     </aside>
   )

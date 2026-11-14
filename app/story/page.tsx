@@ -37,7 +37,8 @@ export default function StoryPage() {
               <strong>You have ninety days.</strong> If it isn’t for you, send it back for a full refund.
             </li>
             <li>
-              <strong>It’s covered for a year.</strong> If the bottle or battery fails, we replace it.
+              <strong>It’s built to last.</strong> A lifetime warranty on the steel and glass, and two years on the
+              battery and electronics.
             </li>
             <li>
               <strong>A person answers.</strong> Write to hello@oxyrawater.com and you’ll hear back within two

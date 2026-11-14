@@ -58,7 +58,7 @@ export default function Buy() {
                 />
                 <span className="choice-name">{b.label}</span>
                 <span className="choice-note">
-                  {b.saving > 0 ? `${formatUsd(b.amount / b.bottles)} each, ${formatUsd(b.saving)} less than buying singly` : 'A single 460 ml bottle'}
+                  {b.saving > 0 ? `Save ${formatUsd(b.saving)} on buying two separately` : 'Glass and stainless steel'}
                 </span>
                 <span className="choice-price">{formatUsd(b.amount)}</span>
               </label>
@@ -75,14 +75,14 @@ export default function Buy() {
 
         <ul className="terms">
           <li>
-            <strong>Free shipping</strong> to Australia, New Zealand, the US, Canada and the UK. Arrives in 7 to 14
-            business days.
+            <strong>Free tracked shipping worldwide.</strong> Most orders arrive in 5 to 20 business days.
           </li>
           <li>
             <strong>90 days to decide.</strong> Send it back for a full refund if it isn&rsquo;t for you.
           </li>
           <li>
-            <strong>One-year warranty</strong> on the bottle and battery. Prices in US dollars, paid through Stripe.
+            <strong>Lifetime warranty</strong> on the steel and glass, two years on the battery and electronics.
+            Prices in US dollars, paid through Stripe.
           </li>
         </ul>
       </div>

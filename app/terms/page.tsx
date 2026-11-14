@@ -29,14 +29,15 @@ export default function TermsPage() {
 
         <h2>3. Delivery</h2>
         <p>
-          We ship to Australia, New Zealand, the United States, Canada and the United Kingdom. Delivery times on the{' '}
+          We ship worldwide. Delivery times on the{' '}
           <a href="/shipping">shipping page</a> are estimates. Responsibility for the goods passes to you when they’re
           delivered to the address you gave us.
         </p>
 
         <h2>4. Returns, refunds and warranty</h2>
         <p>
-          You can return your bottle within 90 days for a full refund, and it’s covered by a one-year warranty. The
+          You can return your bottle within 90 days for a full refund. The steel and glass carry a lifetime
+          warranty, and the battery and electronics are covered for two years. The
           details are on the <a href="/returns">returns and warranty page</a>, which forms part of these terms.
         </p>
 

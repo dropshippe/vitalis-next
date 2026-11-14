@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import Logo from './Logo'
+import { FROM_PRICE } from '@/lib/catalog'
 
 const LINKS = [
   ['/science', 'Science'],
@@ -75,7 +76,7 @@ export default function SiteNav() {
           <a href="/shipping">Shipping</a>
           <a href="/returns">Returns</a>
           <a href="/#buy" onClick={() => setOpen(false)}>
-            Buy from $59.99
+            Buy from {FROM_PRICE}
           </a>
         </nav>
       </div>

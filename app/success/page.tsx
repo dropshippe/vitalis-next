@@ -22,9 +22,9 @@ export default function SuccessPage() {
       <div className="prose prose-legal">
         <h2>What happens next</h2>
         <ol>
-          <li>We pack and dispatch your order within one to two business days.</li>
+          <li>We pack and dispatch your order within one to three business days.</li>
           <li>You get an email with a tracking number when it leaves.</li>
-          <li>It arrives in 7 to 14 business days.</li>
+          <li>Most orders arrive in 5 to 20 business days.</li>
         </ol>
         <p>
           Questions about your order? Email <a href="mailto:hello@oxyrawater.com">hello@oxyrawater.com</a> with the

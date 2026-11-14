@@ -3,14 +3,14 @@ import { BUSINESS, trader } from '@/lib/business'
 
 export const metadata = {
   title: 'Returns and warranty — Oxyra',
-  description: 'The Oxyra 90-day money-back guarantee and one-year warranty.',
+  description: 'The Oxyra 90-day money-back guarantee, lifetime warranty on steel and glass, and two-year warranty on the battery.',
 }
 
 export default function ReturnsPage() {
   return (
     <PageShell
       title="Returns and warranty."
-      intro="Ninety days to change your mind. One year of cover if something fails."
+      intro="Ninety days to change your mind. A lifetime warranty on the steel and glass. Two years on the battery."
       narrow
     >
       <div className="prose prose-legal">
@@ -34,15 +34,42 @@ export default function ReturnsPage() {
           guarantee. Write to us anyway and we’ll look at it.
         </p>
 
-        <h2>One-year warranty</h2>
+        <h2>Our warranty</h2>
         <p>
-          If your bottle or its battery develops a fault within 12 months of delivery, email us a short description
-          and a photo or video. We’ll send a replacement at no cost to you.
+          This warranty covers the original buyer and starts on the day your bottle is delivered.
+        </p>
+        <h3>Lifetime warranty on the steel and glass</h3>
+        <p>
+          The stainless steel cap and base and the glass body are covered for as long as you own the bottle, against
+          defects in materials and workmanship. If one fails, we replace the bottle.
+        </p>
+        <h3>Two years on the battery and electronics</h3>
+        <p>
+          The battery, membrane, button, light and charging port are covered for two years from delivery. If any of
+          them stops working because of a fault, we replace the bottle.
         </p>
         <p>
-          The warranty covers defects in materials and workmanship. It doesn’t cover accidental damage, use with
-          anything other than water, or damage from hot liquids or dishwashers.
+          Batteries hold less charge as they age. Gradual loss of battery life over time is normal wear, not a fault,
+          and isn’t covered.
         </p>
+        <h3>What isn’t covered</h3>
+        <ul>
+          <li>Drops, knocks, cracks or dents from accidental damage.</li>
+          <li>Damage from hot liquids, dishwashers or submerging the base.</li>
+          <li>Using the bottle with anything other than still drinking water.</li>
+          <li>Bottles that have been opened up, modified or repaired by anyone other than us.</li>
+          <li>Normal wear, such as scratches and gradual battery fade.</li>
+          <li>Lost or stolen bottles.</li>
+        </ul>
+        <h3>How to claim</h3>
+        <ol>
+          <li>
+            Email <a href={`mailto:${BUSINESS.email}`}>{BUSINESS.email}</a> with your order number, a short
+            description of the problem and a photo or video.
+          </li>
+          <li>We reply within two business days. We may ask you to try a fix from the care guide first.</li>
+          <li>If it’s covered, we send a replacement at no cost to you. We may ask you to return the faulty bottle.</li>
+        </ol>
         <p>
           This warranty is given by {trader}
           {BUSINESS.address ? `, ${BUSINESS.address}` : ''}
@@ -58,7 +85,10 @@ export default function ReturnsPage() {
           have the goods repaired or replaced if the goods fail to be of acceptable quality and the failure does not
           amount to a major failure.
         </p>
-        <p>If you bought from outside Australia, you may have similar rights under your local consumer law.</p>
+        <p>
+          If you live outside Australia, you also keep any rights your local consumer law gives you, and nothing in
+          this warranty limits them.
+        </p>
       </div>
     </PageShell>
   )

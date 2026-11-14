@@ -774,6 +774,10 @@ body {
   color: var(--color-ink);
 }
 
+.prose-legal h3 {
+  margin-top: 1.6em;
+}
+
 .prose-legal > h2:first-child {
   margin-top: 0;
 }

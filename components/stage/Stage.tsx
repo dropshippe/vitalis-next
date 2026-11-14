@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import type { BottleScene } from './bottleScene'
 import { startHeroBubbles } from './heroBubbles'
+import { FROM_PRICE } from '@/lib/catalog'
 
 const HEADLINE = ['Water,', 'elevated.']
 
@@ -159,7 +160,7 @@ export default function Stage() {
           </p>
           <div className="hero-actions">
             <a className="btn btn-light" href="#buy">
-              Buy from $59.99
+              Buy from {FROM_PRICE}
             </a>
             <a className="link-quiet" href="#details">
               Read the details
@@ -183,7 +184,7 @@ export default function Stage() {
             <p className="chapter-body">{c.body}</p>
             {'cta' in c && (
               <a className="btn btn-light chapter-cta" href="#buy">
-                Buy from $59.99
+                Buy from {FROM_PRICE}
               </a>
             )}
           </div>

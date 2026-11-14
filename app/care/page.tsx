@@ -110,7 +110,8 @@ export default function CarePage() {
             <summary>It still isn’t right</summary>
             <p>
               Email <a href={`mailto:${BUSINESS.email}`}>{BUSINESS.email}</a> with a short description and a photo or
-              video. The bottle and battery are covered for a year.
+              video. The steel and glass carry a lifetime warranty, and the battery and electronics are covered for
+              two years.
             </p>
           </details>
         </div>

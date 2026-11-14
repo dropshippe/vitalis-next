@@ -203,7 +203,7 @@ export default function AdminDashboard() {
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
               <div style={{ background: '#0a1a10', border: '1px solid rgba(45,138,101,0.15)', padding: 28 }}>
                 <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: 2.5, textTransform: 'uppercase' as const, color: '#555', marginBottom: 20 }}>Bundle Selection</div>
-                {[['×1 Essential $59.99', '1'], ['×2 Partner $99.99', '2'], ['×3 Family $134.99', '3']].map(([label, key]) => {
+                {[['One bottle $119.99', '1'], ['Two bottles $199.99', '2']].map(([label, key]) => {
                   const total = Object.values(data?.bundles?.selected || {}).reduce((a, b) => a + b, 0) || 1
                   const count = data?.bundles?.selected?.[key] || 0
                   const pct = Math.round((count / total) * 100)
@@ -222,7 +222,7 @@ export default function AdminDashboard() {
               </div>
               <div style={{ background: '#0a1a10', border: '1px solid rgba(45,138,101,0.15)', padding: 28 }}>
                 <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: 2.5, textTransform: 'uppercase' as const, color: '#555', marginBottom: 20 }}>Bundle Purchases</div>
-                {[['×1 Essential', '1', 5999], ['×2 Partner', '2', 9999], ['×3 Family', '3', 13499]].map(([label, key, price]) => {
+                {[['One bottle', '1', 11999], ['Two bottles', '2', 19999]].map(([label, key, price]) => {
                   const count = data?.bundles?.purchased?.[key as string] || 0
                   const rev = count * (price as number)
                   return (

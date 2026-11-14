@@ -1,13 +1,13 @@
 import PageShell from '@/components/PageShell'
 import { BUSINESS } from '@/lib/business'
 
-export const metadata = { title: 'Shipping — Oxyra', description: 'Where Oxyra ships, how long it takes and what it costs.' }
+export const metadata = { title: 'Shipping — Oxyra', description: 'Oxyra ships worldwide for free. How long it takes and what to expect.' }
 
 const ROWS: [string, React.ReactNode][] = [
-  ['Where we ship', 'Australia, New Zealand, the United States, Canada and the United Kingdom.'],
-  ['Cost', 'Free on every order.'],
-  ['Dispatch', 'Within one to two business days of your order.'],
-  ['Delivery', '7 to 14 business days after dispatch.'],
+  ['Where we ship', 'Worldwide.'],
+  ['Cost', 'Free on every order, wherever you are.'],
+  ['Dispatch', 'Within one to three business days of your order.'],
+  ['Delivery', 'Most orders arrive in 5 to 20 business days. Orders to the United States are usually at the faster end.'],
   ['Tracking', 'We email a tracking number when your order leaves.'],
   [
     'Duties and taxes',
@@ -24,7 +24,7 @@ const ROWS: [string, React.ReactNode][] = [
 
 export default function ShippingPage() {
   return (
-    <PageShell title="Shipping." intro="Free to five countries, tracked the whole way." narrow>
+    <PageShell title="Shipping." intro="Free to anywhere in the world, tracked the whole way." narrow>
       <dl className="specs">
         {ROWS.map(([k, v]) => (
           <div key={k} className="spec">

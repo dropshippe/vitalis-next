@@ -77,18 +77,23 @@ const GROUPS: { heading: string; items: [string, React.ReactNode][] }[] = [
       [
         'Where do you ship?',
         <>
-          Australia, New Zealand, the United States, Canada and the United Kingdom. Shipping is free. Details are on
-          the <a href="/shipping">shipping page</a>.
+          Worldwide, and shipping is free. Details are on the <a href="/shipping">shipping page</a>.
         </>,
       ],
-      ['How long does delivery take?', 'Orders leave within one to two business days and arrive in 7 to 14 business days.'],
+      ['How long does delivery take?', 'Orders leave within one to three business days. Most arrive in 5 to 20 business days.'],
       [
         'What if I don’t like it?',
         <>
           Send it back within 90 days for a full refund. See <a href="/returns">returns and warranty</a>.
         </>,
       ],
-      ['Is there a warranty?', 'Yes, one year on the bottle and battery. If it fails, we replace it.'],
+      [
+        'Is there a warranty?',
+        <>
+          Yes. A lifetime warranty on the steel and glass, and two years on the battery and electronics. Accidental
+          damage such as drops isn’t covered. See <a href="/returns">returns and warranty</a>.
+        </>,
+      ],
       ['How do I pay?', 'By card through Stripe’s secure checkout. Prices are in US dollars.'],
     ],
   },

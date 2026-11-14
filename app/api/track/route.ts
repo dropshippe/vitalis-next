@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { BUNDLES, isBundleId } from '@/lib/catalog'
 
 // We use Vercel KV (Redis) for storage - it's built into Vercel
 // Events are stored as JSON in simple key-value pairs
@@ -100,7 +101,7 @@ export async function POST(req: NextRequest) {
       case 'checkout_complete':
         await kvIncr(`stats:conversions:total`)
         await kvIncr(`stats:conversions:${dateKey}`)
-        const amount = bundle === '1' ? 5999 : 9999
+        const amount = isBundleId(bundle) ? BUNDLES[bundle].amount : BUNDLES['1'].amount
         // Store revenue
         const currentRevRaw = await kvGet(`stats:revenue:total`)
         const currentRev = parseInt(currentRevRaw || '0')
