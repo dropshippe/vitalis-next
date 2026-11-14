@@ -78,7 +78,7 @@ export default function Buy() {
             <strong>Free tracked shipping worldwide.</strong> Most orders arrive in 5 to 20 business days.
           </li>
           <li>
-            <strong>90 days to decide.</strong> Send it back for a full refund if it isn&rsquo;t for you.
+            <strong>30 days to decide.</strong> Send it back for a full refund if it isn&rsquo;t for you.
           </li>
           <li>
             <strong>Lifetime warranty</strong> on the steel and glass, two years on the battery and electronics.

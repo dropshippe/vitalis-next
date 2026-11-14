@@ -31,7 +31,7 @@ export default function PageShell({
   )
 }
 
-export function BuyBand({ line = 'Ninety days to decide. Free shipping worldwide.' }: { line?: string }) {
+export function BuyBand({ line = 'Thirty days to decide. Free shipping worldwide.' }: { line?: string }) {
   return (
     <aside className="buy-band">
       <p>{line}</p>

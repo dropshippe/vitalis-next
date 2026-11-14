@@ -36,7 +36,7 @@ export default function TermsPage() {
 
         <h2>4. Returns, refunds and warranty</h2>
         <p>
-          You can return your bottle within 90 days for a full refund. The steel and glass carry a lifetime
+          You can return your bottle within 30 days for a full refund. The steel and glass carry a lifetime
           warranty, and the battery and electronics are covered for two years. The
           details are on the <a href="/returns">returns and warranty page</a>, which forms part of these terms.
         </p>

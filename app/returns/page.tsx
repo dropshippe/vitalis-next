@@ -3,20 +3,20 @@ import { BUSINESS, trader } from '@/lib/business'
 
 export const metadata = {
   title: 'Returns and warranty — Oxyra',
-  description: 'The Oxyra 90-day money-back guarantee, lifetime warranty on steel and glass, and two-year warranty on the battery.',
+  description: 'The Oxyra 30-day money-back guarantee, lifetime warranty on steel and glass, and two-year warranty on the battery.',
 }
 
 export default function ReturnsPage() {
   return (
     <PageShell
       title="Returns and warranty."
-      intro="Ninety days to change your mind. A lifetime warranty on the steel and glass. Two years on the battery."
+      intro="Thirty days to change your mind. A lifetime warranty on the steel and glass. Two years on the battery."
       narrow
     >
       <div className="prose prose-legal">
-        <h2>90-day money-back guarantee</h2>
+        <h2>30-day money-back guarantee</h2>
         <p>
-          If you’re not happy with your bottle for any reason, tell us within 90 days of receiving it and we’ll refund
+          If you’re not happy with your bottle for any reason, tell us within 30 days of receiving it and we’ll refund
           the full price.
         </p>
         <ol>

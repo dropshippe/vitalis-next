@@ -34,7 +34,7 @@ export default function StoryPage() {
               it happen.
             </li>
             <li>
-              <strong>You have ninety days.</strong> If it isn’t for you, send it back for a full refund.
+              <strong>You have thirty days.</strong> If it isn’t for you, send it back for a full refund.
             </li>
             <li>
               <strong>It’s built to last.</strong> A lifetime warranty on the steel and glass, and two years on the

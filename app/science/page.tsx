@@ -163,7 +163,7 @@ export default function SciencePage() {
         </div>
       </section>
 
-      <BuyBand line="See it work for yourself. Ninety days to decide." />
+      <BuyBand line="See it work for yourself. Thirty days to decide." />
     </PageShell>
   )
 }

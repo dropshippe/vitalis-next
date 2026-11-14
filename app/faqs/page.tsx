@@ -84,7 +84,7 @@ const GROUPS: { heading: string; items: [string, React.ReactNode][] }[] = [
       [
         'What if I don’t like it?',
         <>
-          Send it back within 90 days for a full refund. See <a href="/returns">returns and warranty</a>.
+          Send it back within 30 days for a full refund. See <a href="/returns">returns and warranty</a>.
         </>,
       ],
       [
