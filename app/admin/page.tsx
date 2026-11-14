@@ -1,330 +1,237 @@
-'use client'
-import { useState, useEffect, useCallback } from 'react'
+import { redirect } from 'next/navigation'
+import { isAdmin } from '@/lib/adminAuth'
+import { getStore } from '@/lib/orders/store'
+import type { Order, OrderEvent } from '@/lib/orders/types'
+import { getBalance } from '@/lib/cj'
+import { formatUsd } from '@/lib/catalog'
+import { trackingUrl } from '@/lib/email'
+import { cancelOrder, logout, markShipped, retryOrder, syncNow } from './actions'
 
+export const dynamic = 'force-dynamic'
+export const metadata = { title: 'Orders — Oxyra', robots: { index: false, follow: false } }
 
-const D = { fontFamily: "'Cormorant Garamond', serif" } as React.CSSProperties
-const B = { fontFamily: "'DM Sans', sans-serif" } as React.CSSProperties
-
-function fmt(n: number) { return n.toLocaleString() }
-function fmtMoney(cents: number) { return `$${(cents / 100).toFixed(2)}` }
-function fmtDate(iso: string) {
-  try {
-    return new Date(iso).toLocaleString('en-AU', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })
-  } catch { return iso }
-}
-function shortDate(iso: string) {
-  try {
-    return new Date(iso).toLocaleDateString('en-AU', { day: 'numeric', month: 'short' })
-  } catch { return iso }
-}
-
-type Analytics = {
-  summary: {
-    totalPageviews: number
-    todayPageviews: number
-    yesterdayPageviews: number
-    totalCheckouts: number
-    todayCheckouts: number
-    totalConversions: number
-    todayConversions: number
-    totalRevenue: number
-    todayRevenue: number
-    conversionRate: string
-    checkoutConversionRate: string
-    avgOrderValue: number
-  }
-  bundles: {
-    selected: Record<string, number>
-    purchased: Record<string, number>
-  }
-  pages: Record<string, number>
-  dailyData: { date: string; views: number; conversions: number; revenue: number }[]
-  recentEvents: { event: string; page: string; timestamp: string }[]
-  recentSales: { bundle: string; amount: number; timestamp: string }[]
-  recentCheckouts: { bundle: string; timestamp: string }[]
+const LABEL: Record<Order['status'], string> = {
+  paid: 'Paid, queued for CJ',
+  sending: 'Sending to CJ',
+  sent: 'At CJ, waiting for tracking',
+  shipped: 'Shipped',
+  delivered: 'Delivered',
+  failed: 'Failed, will retry',
+  needs_review: 'Needs you',
+  cancelled: 'Cancelled',
 }
 
-export default function AdminDashboard() {
-  const [authed, setAuthed] = useState(false)
-  const [password, setPassword] = useState('')
-  const [error, setError] = useState('')
-  const [data, setData] = useState<Analytics | null>(null)
-  const [loading, setLoading] = useState(false)
-  const [lastRefresh, setLastRefresh] = useState<Date | null>(null)
-  const [activeTab, setActiveTab] = useState('overview')
-
-  const fetchData = useCallback(async () => {
-    setLoading(true)
-    try {
-      const res = await fetch('/api/track', {
-        headers: { 'x-admin-secret': password }
+const when = (iso: string | null) =>
+  iso
+    ? new Date(iso).toLocaleString('en-AU', {
+        timeZone: process.env.ADMIN_TIMEZONE || 'Australia/Brisbane',
+        day: 'numeric',
+        month: 'short',
+        hour: 'numeric',
+        minute: '2-digit',
       })
-      if (res.ok) {
-        const json = await res.json()
-        setData(json)
-        setLastRefresh(new Date())
-      }
-    } catch {}
-    setLoading(false)
-  }, [password])
+    : ''
 
-  useEffect(() => {
-    if (authed) {
-      fetchData()
-      const interval = setInterval(fetchData, 30000) // refresh every 30s
-      return () => clearInterval(interval)
-    }
-  }, [authed, fetchData])
+const CONFIG: [string, string][] = [
+  ['SUPABASE_URL', 'Order database'],
+  ['SUPABASE_SECRET_KEY', 'Order database key'],
+  ['STRIPE_SECRET_KEY', 'Stripe checkout'],
+  ['STRIPE_WEBHOOK_SECRET', 'Stripe payment confirmations'],
+  ['CJ_API_KEY', 'CJ ordering'],
+  ['RESEND_API_KEY', 'Customer emails'],
+  ['EMAIL_FROM', 'Email sender address'],
+  ['ADMIN_EMAIL', 'Alerts to you'],
+  ['CRON_SECRET', 'Daily tracking check'],
+]
 
-  // The password is checked on the server; it is never shipped in the page code.
-  async function handleLogin(e: React.FormEvent) {
-    e.preventDefault()
-    const res = await fetch('/api/track', { headers: { 'x-admin-secret': password } }).catch(() => null)
-    if (res?.ok) {
-      setAuthed(true)
-      setError('')
-    } else {
-      setError(res?.status === 503 ? 'Admin password is not set up yet (ADMIN_SECRET)' : 'Incorrect password')
-    }
+export default async function AdminPage() {
+  if (!(await isAdmin())) redirect('/admin/login')
+
+  const store = getStore()
+  const orders = await store.listOrders(200)
+  const events = new Map<string, OrderEvent[]>()
+  await Promise.all(orders.slice(0, 60).map(async (o) => events.set(o.id, await store.listEvents(o.id, 12))))
+
+  let balance: string
+  try {
+    balance = process.env.CJ_API_KEY ? formatUsd(Math.round((await getBalance()) * 100)) : 'CJ not connected'
+  } catch (err) {
+    balance = `Couldn’t check (${err instanceof Error ? err.message : 'error'})`
   }
 
-  if (!authed) {
-    return (
-      <div style={{ ...B, minHeight: '100vh', background: '#030a0e', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <div style={{ width: 360, padding: 40, background: '#0a1a10', border: '1px solid rgba(45,138,101,0.3)' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 32 }}>
-            <div style={{ width: 8, height: 8, background: '#2d8a65', borderRadius: '50%' }} />
-            <span style={{ ...D, fontSize: 20, letterSpacing: 5, textTransform: 'uppercase', color: 'white', fontWeight: 300 }}>Oxyra</span>
-            <span style={{ fontSize: 10, color: '#555', letterSpacing: 2, textTransform: 'uppercase', marginLeft: 4 }}>Admin</span>
-          </div>
-          <div style={{ fontSize: 14, color: '#aaa', marginBottom: 24 }}>Enter your admin password to access the dashboard.</div>
-          <form onSubmit={handleLogin}>
-            <input
-              type="password"
-              value={password}
-              onChange={e => setPassword(e.target.value)}
-              placeholder="Password"
-              style={{ width: '100%', padding: '12px 16px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: 'white', fontSize: 14, marginBottom: 12, outline: 'none', boxSizing: 'border-box', fontFamily: "'DM Sans',sans-serif" }}
-            />
-            {error && <div style={{ fontSize: 12, color: '#e07060', marginBottom: 12 }}>{error}</div>}
-            <button type="submit" style={{ width: '100%', padding: '13px', background: '#2d8a65', color: 'white', border: 'none', cursor: 'pointer', fontSize: 12, fontWeight: 600, letterSpacing: 2, textTransform: 'uppercase', fontFamily: "'DM Sans',sans-serif" }}>
-              Sign In
-            </button>
-          </form>
-        </div>
-      </div>
-    )
-  }
-
-  const s = data?.summary
-  const tabs = ['overview', 'traffic', 'sales', 'live feed']
-
-  const statCard = (label: string, value: string, sub?: string, color?: string) => (
-    <div style={{ background: '#0a1a10', border: '1px solid rgba(45,138,101,0.15)', padding: '24px 28px' }}>
-      <div style={{ fontSize: 10, letterSpacing: 2.5, textTransform: 'uppercase' as const, color: '#555', marginBottom: 10 }}>{label}</div>
-      <div style={{ ...D, fontSize: 40, fontWeight: 300, color: color || 'white', lineHeight: 1, marginBottom: 6 }}>{value}</div>
-      {sub && <div style={{ fontSize: 11, color: '#555' }}>{sub}</div>}
-    </div>
-  )
-
-  const maxViews = Math.max(...(data?.dailyData?.map(d => d.views) || [1]))
-  const maxRev = Math.max(...(data?.dailyData?.map(d => d.revenue) || [1]))
+  const missing = CONFIG.filter(([k]) => !process.env[k])
+  const attention = orders.filter((o) => o.status === 'needs_review' || o.status === 'failed')
+  const revenue = orders.filter((o) => o.status !== 'cancelled').reduce((s, o) => s + o.amount_total, 0)
+  const cjCost = orders.reduce((s, o) => s + (o.cj_order_amount ?? 0), 0)
 
   return (
-    <div style={{ ...B, minHeight: '100vh', background: '#030a0e', color: 'white' }}>
-
-      {/* Top bar */}
-      <div style={{ background: '#0a1a10', borderBottom: '1px solid rgba(45,138,101,0.2)', padding: '0 32px', height: 56, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <div style={{ width: 7, height: 7, background: '#2d8a65', borderRadius: '50%' }} />
-          <span style={{ ...D, fontSize: 16, letterSpacing: 5, textTransform: 'uppercase', color: 'white', fontWeight: 300 }}>Oxyra</span>
-          <span style={{ fontSize: 10, color: '#2d8a65', letterSpacing: 2, textTransform: 'uppercase', marginLeft: 4, background: 'rgba(45,138,101,0.15)', padding: '3px 8px' }}>Admin</span>
+    <main className="admin">
+      <header className="admin-top">
+        <h1>Orders</h1>
+        <div className="admin-top-actions">
+          <a href="/admin/analytics">Traffic</a>
+          <form action={syncNow}>
+            <button className="btn btn-dark">Check CJ now</button>
+          </form>
+          <form action={logout}>
+            <button className="admin-link">Sign out</button>
+          </form>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-          {lastRefresh && <span style={{ fontSize: 11, color: '#555' }}>Updated {lastRefresh.toLocaleTimeString()}</span>}
-          <button onClick={fetchData} disabled={loading} style={{ background: 'rgba(45,138,101,0.15)', border: '1px solid rgba(45,138,101,0.3)', color: '#5cbf94', fontSize: 11, fontWeight: 600, letterSpacing: 1, padding: '6px 14px', cursor: 'pointer', fontFamily: "'DM Sans',sans-serif" }}>
-            {loading ? 'Refreshing...' : '↻ Refresh'}
-          </button>
-          <button onClick={() => setAuthed(false)} style={{ background: 'none', border: '1px solid rgba(255,255,255,0.1)', color: '#666', fontSize: 11, padding: '6px 14px', cursor: 'pointer', fontFamily: "'DM Sans',sans-serif" }}>Sign out</button>
+      </header>
+
+      {missing.length > 0 && (
+        <section className="admin-warn">
+          <strong>Not set up yet:</strong> {missing.map(([k, label]) => `${label} (${k})`).join(', ')}. Add these in Vercel →
+          Settings → Environment Variables, then redeploy.
+        </section>
+      )}
+
+      <dl className="admin-stats">
+        <div>
+          <dt>Needs you</dt>
+          <dd className={attention.length ? 'hot' : ''}>{attention.length}</dd>
         </div>
-      </div>
+        <div>
+          <dt>Orders</dt>
+          <dd>{orders.length}</dd>
+        </div>
+        <div>
+          <dt>Taken</dt>
+          <dd>{formatUsd(revenue)}</dd>
+        </div>
+        <div>
+          <dt>Paid to CJ</dt>
+          <dd>{formatUsd(Math.round(cjCost * 100))}</dd>
+        </div>
+        <div>
+          <dt>CJ wallet</dt>
+          <dd>{balance}</dd>
+        </div>
+      </dl>
 
-      {/* Tabs */}
-      <div style={{ borderBottom: '1px solid rgba(255,255,255,0.06)', padding: '0 32px', display: 'flex', gap: 0 }}>
-        {tabs.map(tab => (
-          <button key={tab} onClick={() => setActiveTab(tab)} style={{ padding: '14px 20px', background: 'none', border: 'none', borderBottom: activeTab === tab ? '2px solid #2d8a65' : '2px solid transparent', color: activeTab === tab ? 'white' : '#555', fontSize: 12, fontWeight: 600, letterSpacing: 1.5, textTransform: 'uppercase', cursor: 'pointer', fontFamily: "'DM Sans',sans-serif", marginBottom: -1 }}>
-            {tab}
-          </button>
-        ))}
-      </div>
+      {orders.length === 0 ? (
+        <p className="admin-empty">No orders yet. They appear here the moment Stripe confirms a payment.</p>
+      ) : (
+        <ul className="admin-orders">
+          {orders.map((o) => (
+            <li key={o.id} className={`admin-order status-${o.status}`}>
+              <details open={o.status === 'needs_review' || o.status === 'failed'}>
+                <summary>
+                  <span className="o-num">{o.order_number}</span>
+                  <span className="o-when">{when(o.created_at)}</span>
+                  <span className="o-who">
+                    {o.customer_name || 'No name'} · {o.ship_country || '??'}
+                  </span>
+                  <span className="o-qty">
+                    {o.quantity} {o.quantity === 1 ? 'bottle' : 'bottles'}, {formatUsd(o.amount_total)}
+                  </span>
+                  <span className="o-status">{LABEL[o.status]}</span>
+                </summary>
 
-      <div style={{ padding: 32 }}>
-
-        {/* OVERVIEW TAB */}
-        {activeTab === 'overview' && (
-          <div>
-            {/* Key metrics */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16, marginBottom: 32 }}>
-              {statCard('Total Revenue', s ? fmtMoney(s.totalRevenue) : '—', `Today: ${s ? fmtMoney(s.todayRevenue) : '—'}`, '#5cbf94')}
-              {statCard('Total Orders', s ? fmt(s.totalConversions) : '—', `Today: ${s?.todayConversions || 0}`)}
-              {statCard('Conversion Rate', s ? `${s.conversionRate}%` : '—', 'Visitors → Orders')}
-              {statCard('Avg Order Value', s ? fmtMoney(s.avgOrderValue) : '—', 'Per conversion')}
-            </div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16, marginBottom: 32 }}>
-              {statCard('Total Visits', s ? fmt(s.totalPageviews) : '—', `Today: ${s?.todayPageviews || 0}`)}
-              {statCard('Checkout Starts', s ? fmt(s.totalCheckouts) : '—', `Today: ${s?.todayCheckouts || 0}`)}
-              {statCard('Checkout Conv.', s ? `${s.checkoutConversionRate}%` : '—', 'Started → Completed')}
-              {statCard('Drop-off Rate', s ? `${(100 - parseFloat(s.checkoutConversionRate)).toFixed(1)}%` : '—', 'Left checkout')}
-            </div>
-
-            {/* 7-day chart */}
-            <div style={{ background: '#0a1a10', border: '1px solid rgba(45,138,101,0.15)', padding: 28, marginBottom: 32 }}>
-              <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: 2.5, textTransform: 'uppercase' as const, color: '#555', marginBottom: 20 }}>Last 7 Days — Traffic & Revenue</div>
-              <div style={{ display: 'flex', gap: 8, alignItems: 'flex-end', height: 160 }}>
-                {data?.dailyData?.map(d => (
-                  <div key={d.date} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
-                    <div style={{ fontSize: 9, color: '#5cbf94' }}>{d.revenue > 0 ? fmtMoney(d.revenue) : ''}</div>
-                    <div style={{ width: '100%', display: 'flex', gap: 2, alignItems: 'flex-end', height: 120 }}>
-                      <div style={{ flex: 1, background: 'rgba(45,138,101,0.6)', height: `${Math.max(4, (d.views / maxViews) * 100)}%`, minHeight: 4 }} title={`${d.views} views`} />
-                      <div style={{ flex: 1, background: '#5cbf94', height: `${Math.max(d.revenue > 0 ? 4 : 0, (d.revenue / Math.max(maxRev, 1)) * 100)}%` }} title={fmtMoney(d.revenue)} />
+                <div className="o-body">
+                  {o.last_error && <p className="o-error">{o.last_error}</p>}
+                  <dl className="o-facts">
+                    <div>
+                      <dt>Customer</dt>
+                      <dd>
+                        {o.customer_name}
+                        <br />
+                        {o.customer_email}
+                        {o.customer_phone ? (
+                          <>
+                            <br />
+                            {o.customer_phone}
+                          </>
+                        ) : null}
+                      </dd>
                     </div>
-                    <div style={{ fontSize: 9, color: '#444', textAlign: 'center' as const }}>{shortDate(d.date)}</div>
-                    <div style={{ fontSize: 9, color: '#666' }}>{d.views}v</div>
+                    <div>
+                      <dt>Ship to</dt>
+                      <dd>
+                        {[o.ship_name, o.ship_line1, o.ship_line2, [o.ship_city, o.ship_state, o.ship_postal_code].filter(Boolean).join(' '), o.ship_country]
+                          .filter(Boolean)
+                          .map((l, i) => (
+                            <span key={i}>
+                              {l}
+                              <br />
+                            </span>
+                          ))}
+                      </dd>
+                    </div>
+                    <div>
+                      <dt>CJ</dt>
+                      <dd>
+                        {o.cj_order_id ? `Order ${o.cj_order_id}` : 'Not placed yet'}
+                        {o.cj_status ? ` · ${o.cj_status}` : ''}
+                        {o.cj_logistic_name ? (
+                          <>
+                            <br />
+                            {o.cj_logistic_name}
+                          </>
+                        ) : null}
+                        {o.cj_order_amount !== null ? (
+                          <>
+                            <br />
+                            Cost {formatUsd(Math.round(Number(o.cj_order_amount) * 100))}
+                          </>
+                        ) : null}
+                      </dd>
+                    </div>
+                    <div>
+                      <dt>Tracking</dt>
+                      <dd>
+                        {o.tracking_number ? (
+                          <a href={trackingUrl(o.tracking_number)} target="_blank" rel="noopener noreferrer">
+                            {o.tracking_number}
+                          </a>
+                        ) : (
+                          'None yet'
+                        )}
+                        <br />
+                        Confirmation email {o.confirmation_email_at ? 'sent' : 'not sent'}
+                        <br />
+                        Shipping email {o.shipping_email_at ? 'sent' : 'not sent'}
+                      </dd>
+                    </div>
+                  </dl>
+
+                  <div className="o-actions">
+                    {(o.status === 'failed' || o.status === 'needs_review') && (
+                      <form action={retryOrder}>
+                        <input type="hidden" name="id" value={o.id} />
+                        <button className="btn btn-dark">Retry sending to CJ</button>
+                      </form>
+                    )}
+                    {o.status !== 'shipped' && o.status !== 'delivered' && o.status !== 'cancelled' && (
+                      <form action={markShipped} className="o-track">
+                        <input type="hidden" name="id" value={o.id} />
+                        <input name="tracking" placeholder="Tracking number" aria-label="Tracking number" />
+                        <button className="admin-link">Mark shipped and email customer</button>
+                      </form>
+                    )}
+                    {o.status !== 'cancelled' && o.status !== 'shipped' && o.status !== 'delivered' && (
+                      <form action={cancelOrder}>
+                        <input type="hidden" name="id" value={o.id} />
+                        <button className="admin-link">Cancel</button>
+                      </form>
+                    )}
                   </div>
-                ))}
-              </div>
-              <div style={{ display: 'flex', gap: 20, marginTop: 12 }}>
-                <span style={{ fontSize: 10, color: '#555', display: 'flex', alignItems: 'center', gap: 6 }}><span style={{ width: 10, height: 10, background: 'rgba(45,138,101,0.6)', display: 'inline-block' }} />Visits</span>
-                <span style={{ fontSize: 10, color: '#555', display: 'flex', alignItems: 'center', gap: 6 }}><span style={{ width: 10, height: 10, background: '#5cbf94', display: 'inline-block' }} />Revenue</span>
-              </div>
-            </div>
 
-            {/* Bundle performance */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
-              <div style={{ background: '#0a1a10', border: '1px solid rgba(45,138,101,0.15)', padding: 28 }}>
-                <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: 2.5, textTransform: 'uppercase' as const, color: '#555', marginBottom: 20 }}>Bundle Selection</div>
-                {[['One bottle $119.99', '1'], ['Two bottles $199.99', '2']].map(([label, key]) => {
-                  const total = Object.values(data?.bundles?.selected || {}).reduce((a, b) => a + b, 0) || 1
-                  const count = data?.bundles?.selected?.[key] || 0
-                  const pct = Math.round((count / total) * 100)
-                  return (
-                    <div key={key} style={{ marginBottom: 16 }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, marginBottom: 6 }}>
-                        <span style={{ color: '#aaa' }}>{label}</span>
-                        <span style={{ color: 'white', fontWeight: 600 }}>{count} ({pct}%)</span>
-                      </div>
-                      <div style={{ height: 6, background: 'rgba(255,255,255,0.06)', borderRadius: 3, overflow: 'hidden' }}>
-                        <div style={{ height: '100%', background: key === '2' ? '#2d8a65' : 'rgba(45,138,101,0.4)', width: `${pct}%`, borderRadius: 3 }} />
-                      </div>
-                    </div>
-                  )
-                })}
-              </div>
-              <div style={{ background: '#0a1a10', border: '1px solid rgba(45,138,101,0.15)', padding: 28 }}>
-                <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: 2.5, textTransform: 'uppercase' as const, color: '#555', marginBottom: 20 }}>Bundle Purchases</div>
-                {[['One bottle', '1', 11999], ['Two bottles', '2', 19999]].map(([label, key, price]) => {
-                  const count = data?.bundles?.purchased?.[key as string] || 0
-                  const rev = count * (price as number)
-                  return (
-                    <div key={key} style={{ marginBottom: 16, display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 0', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                      <span style={{ fontSize: 12, color: '#aaa' }}>{label}</span>
-                      <div style={{ textAlign: 'right' as const }}>
-                        <div style={{ fontSize: 14, fontWeight: 600, color: 'white' }}>{count} orders</div>
-                        <div style={{ fontSize: 11, color: '#5cbf94' }}>{fmtMoney(rev)}</div>
-                      </div>
-                    </div>
-                  )
-                })}
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* TRAFFIC TAB */}
-        {activeTab === 'traffic' && (
-          <div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16, marginBottom: 32 }}>
-              {statCard('Total Pageviews', s ? fmt(s.totalPageviews) : '—', `Yesterday: ${s?.yesterdayPageviews || 0}`)}
-              {statCard("Today's Views", s ? fmt(s.todayPageviews) : '—')}
-              {statCard('Scroll 75%+', fmt(0), 'Deep engagement')}
-            </div>
-            <div style={{ background: '#0a1a10', border: '1px solid rgba(45,138,101,0.15)', padding: 28, marginBottom: 24 }}>
-              <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: 2.5, textTransform: 'uppercase' as const, color: '#555', marginBottom: 20 }}>Page Performance</div>
-              {Object.entries(data?.pages || {}).sort((a, b) => b[1] - a[1]).map(([page, views]) => {
-                const totalViews = Object.values(data?.pages || {}).reduce((a, b) => a + b, 0) || 1
-                const pct = Math.round((views / totalViews) * 100)
-                return (
-                  <div key={page} style={{ marginBottom: 16 }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, marginBottom: 6 }}>
-                      <span style={{ color: '#aaa' }}>/{page === 'home' ? '' : page}</span>
-                      <span style={{ color: 'white', fontWeight: 600 }}>{views} views ({pct}%)</span>
-                    </div>
-                    <div style={{ height: 6, background: 'rgba(255,255,255,0.06)', borderRadius: 3, overflow: 'hidden' }}>
-                      <div style={{ height: '100%', background: 'rgba(45,138,101,0.5)', width: `${pct}%`, borderRadius: 3 }} />
-                    </div>
-                  </div>
-                )
-              })}
-            </div>
-          </div>
-        )}
-
-        {/* SALES TAB */}
-        {activeTab === 'sales' && (
-          <div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16, marginBottom: 32 }}>
-              {statCard('Total Revenue', s ? fmtMoney(s.totalRevenue) : '—', undefined, '#5cbf94')}
-              {statCard('Total Orders', s ? fmt(s.totalConversions) : '—')}
-              {statCard('Avg Order', s ? fmtMoney(s.avgOrderValue) : '—')}
-            </div>
-            <div style={{ background: '#0a1a10', border: '1px solid rgba(45,138,101,0.15)', padding: 28 }}>
-              <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: 2.5, textTransform: 'uppercase' as const, color: '#555', marginBottom: 20 }}>Recent Sales</div>
-              {data?.recentSales?.length === 0 && <div style={{ fontSize: 13, color: '#555' }}>No sales yet — they will appear here once customers complete checkout.</div>}
-              {data?.recentSales?.map((sale, i) => (
-                <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '14px 0', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                  <div>
-                    <div style={{ fontSize: 13, color: 'white', fontWeight: 600, marginBottom: 3 }}>
-                      {sale.bundle === '1' ? '×1 The Essential' : sale.bundle === '2' ? '×2 The Partner' : '×3 The Family'}
-                    </div>
-                    <div style={{ fontSize: 11, color: '#555' }}>{fmtDate(sale.timestamp)}</div>
-                  </div>
-                  <div style={{ fontSize: 18, color: '#5cbf94', fontWeight: 600 }}>{fmtMoney(sale.amount)}</div>
+                  {(events.get(o.id) ?? []).length > 0 && (
+                    <ol className="o-events">
+                      {(events.get(o.id) ?? []).map((e) => (
+                        <li key={e.id}>
+                          <time>{when(e.created_at)}</time> {e.message}
+                        </li>
+                      ))}
+                    </ol>
+                  )}
                 </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* LIVE FEED TAB */}
-        {activeTab === 'live feed' && (
-          <div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
-              <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: 2.5, textTransform: 'uppercase' as const, color: '#555' }}>Real-time Activity</div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                <div style={{ width: 8, height: 8, background: '#2d8a65', borderRadius: '50%', animation: 'pulse 2s infinite' }} />
-                <span style={{ fontSize: 11, color: '#2d8a65' }}>Live</span>
-              </div>
-            </div>
-            <div style={{ background: '#0a1a10', border: '1px solid rgba(45,138,101,0.15)', padding: 0, overflow: 'hidden' }}>
-              {data?.recentEvents?.length === 0 && (
-                <div style={{ padding: 28, fontSize: 13, color: '#555' }}>No events yet — they will appear here as visitors use the site.</div>
-              )}
-              {data?.recentEvents?.map((ev, i) => (
-                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 16, padding: '12px 20px', borderBottom: '1px solid rgba(255,255,255,0.04)', background: i === 0 ? 'rgba(45,138,101,0.05)' : 'transparent' }}>
-                  <div style={{ width: 8, height: 8, borderRadius: '50%', flexShrink: 0, background: ev.event === 'pageview' ? '#2d8a65' : ev.event === 'checkout_start' ? '#f59e0b' : ev.event === 'checkout_complete' ? '#5cbf94' : '#444' }} />
-                  <div style={{ flex: 1 }}>
-                    <span style={{ fontSize: 12, color: 'white', fontWeight: 600 }}>{ev.event}</span>
-                    {ev.page && <span style={{ fontSize: 12, color: '#555', marginLeft: 8 }}>{ev.page}</span>}
-                  </div>
-                  <div style={{ fontSize: 11, color: '#444' }}>{fmtDate(ev.timestamp)}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-      </div>
-      <style>{`@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }`}</style>
-    </div>
+              </details>
+            </li>
+          ))}
+        </ul>
+      )}
+    </main>
   )
 }

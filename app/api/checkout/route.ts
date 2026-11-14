@@ -39,6 +39,8 @@ export async function POST(req: NextRequest) {
       success_url: `${baseUrl}/success?bundle=${bundle.id}&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${baseUrl}/#buy`,
       shipping_address_collection: { allowed_countries: [...SHIP_TO] },
+      // Couriers need a phone number for delivery problems.
+      phone_number_collection: { enabled: true },
       shipping_options: [
         {
           shipping_rate_data: {
