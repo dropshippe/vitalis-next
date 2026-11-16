@@ -7,6 +7,13 @@ export async function POST(req: NextRequest) {
   if (!secret) {
     return NextResponse.json({ error: 'not_configured' }, { status: 503 })
   }
+  // On the live site, don't take money until an order can be saved and sent to the supplier.
+  if (process.env.VERCEL_ENV === 'production') {
+    const needed = ['SUPABASE_URL', 'SUPABASE_SECRET_KEY', 'STRIPE_WEBHOOK_SECRET', 'CJ_API_KEY']
+    if (needed.some((k) => !process.env[k]?.trim())) {
+      return NextResponse.json({ error: 'not_configured' }, { status: 503 })
+    }
+  }
 
   let qty: unknown
   try {
